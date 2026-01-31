@@ -13,7 +13,10 @@ export class QueryComponent {
   prompt: string = '';
   responseHtml: string = '';
   isLoading: boolean = false;
+  isSaving: boolean = false;
   error: string = '';
+  successMessage: string = '';
+  tableName: string = '';
 
   constructor(private queryService: QueryService) {}
 
@@ -25,6 +28,7 @@ export class QueryComponent {
 
     this.isLoading = true;
     this.error = '';
+    this.successMessage = '';
     this.responseHtml = '';
 
     this.queryService.executeQuery(this.prompt).subscribe({
@@ -35,6 +39,33 @@ export class QueryComponent {
       error: (error) => {
         this.error = 'Error executing query: ' + error.message;
         this.isLoading = false;
+      }
+    });
+  }
+
+  saveTable(): void {
+    if (!this.responseHtml) {
+      this.error = 'No table data to save. Please execute a query first.';
+      return;
+    }
+
+    if (!this.tableName.trim()) {
+      this.error = 'Please enter a table name';
+      return;
+    }
+
+    this.isSaving = true;
+    this.error = '';
+    this.successMessage = '';
+
+    this.queryService.saveTable(this.responseHtml, this.tableName).subscribe({
+      next: (response) => {
+        this.successMessage = 'Table saved successfully!';
+        this.isSaving = false;
+      },
+      error: (error) => {
+        this.error = 'Error saving table: ' + error.message;
+        this.isSaving = false;
       }
     });
   }
