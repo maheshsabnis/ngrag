@@ -1,0 +1,32 @@
+<div class="query-container">
+  <h1>Query Application</h1>
+
+  <div class="input-section">
+    <label for="prompt">Enter Prompt:</label>
+    <textarea
+      id="prompt"
+      [(ngModel)]="prompt"
+      placeholder="Enter your query here..."
+      rows="5"
+      cols="50"
+      [disabled]="isLoading"
+    ></textarea>
+
+    <button
+      (click)="executeQuery()"
+      [disabled]="isLoading"
+      class="submit-btn"
+    >
+      {{ isLoading ? 'Loading...' : 'Execute Query' }}
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="responseHtml" class="response-section">
+    <h2>Result:</h2>
+    <div [innerHTML]="responseHtml" class="table-container"></div>
+  </div>
+</div>
